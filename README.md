@@ -9,12 +9,16 @@ ReactDOM.render(
 );
 
 **React with JSX: (a react element, not component)**
+```html
 ReactDOM.render(
   <h2>Hello React with JSX -- {Math.random()}</h2>,
   document.getElementById('root')
 );
+```
 
 **React Default Properties**
+```html
 App.defaultProps = {
     headerMessage: 'Hello!'
 };
+```
