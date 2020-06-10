@@ -7,6 +7,9 @@ class Question extends Component {
     this.props.nextState(this.yearEntered.value);
     this.yearEntered.value = '';
   };
+  componentDidMount(){
+    this.yearEntered.focus();
+  }
 
   render() {
     return (

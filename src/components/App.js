@@ -23,7 +23,6 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.currentDiff = 0;
-    this.totalDiff = 0;
     this.numberOfTries = INITIAL_TRIES;
     this.currentQuestion = this.fetchQuestion();
   }
@@ -33,12 +32,10 @@ class App extends Component {
     currentScore: 0,
   };
 
-  /* Determine the next state after some form been submitted.
-  * If appropriate, update the score. */
+  /* Determine the next state after some form been submitted. */
   nextState = (answer) => {
     if (answer) {
       this.currentDiff = answer - this.currentQuestion.answer;
-      this.totalDiff += this.currentDiff;
       this.numberOfTries--;
     }
 
@@ -58,6 +55,7 @@ class App extends Component {
       case states.TRYAGAIN: {
         if (this.numberOfTries === 0) {
           this.setState({
+            currentScore: this.state.currentScore + this.calculateScore(),
             currentState: states.ANSWER
           });
         } else {
@@ -73,18 +71,22 @@ class App extends Component {
     }
   };
 
+  calculateScore = () => {
+    let score = 1000 - 100 * (INITIAL_TRIES - this.numberOfTries) 
+                     - 10 * Math.abs(this.currentDiff);
+    return Math.max(score, 0);
+  }
+
   /* Fetch the question from the API and put it on the state.
-  * Update the score and reset differences and the number of tries. */
+  * Reset differences and the number of tries. */
   fetchQuestion = () => {
     let questionID = Math.ceil(Math.random() * 10);
     api.fetchQuestion(questionID).then(questionObj => {
       this.currentQuestion = questionObj;
       this.setState({
         currentState: states.QUESTION,
-        currentScore: this.state.currentScore + Math.abs(this.totalDiff),
       });
       this.currentDiff = 0;
-      this.totalDiff = 0;
       this.numberOfTries = INITIAL_TRIES;
     });
   };
@@ -112,7 +114,7 @@ class App extends Component {
       case states.ANSWER:
         return <Answer
           answer={this.currentQuestion.answer}
-          points={Math.abs(this.totalDiff)}
+          points={this.calculateScore()}
           nextState={this.nextState} />;
     }
   };

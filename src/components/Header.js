@@ -4,14 +4,14 @@ import PropTypes from 'prop-types';
 const Header = ({ currentScore }) => {
   return (
     <div className="header">
-      <h1 className="title">
-            What Year Was That?
-      </h1>
+      <h1><div className="title"> 
+          What Year Was That? 
+      </div></h1>
       <div className="score-bar">
-        <ul className="points">
-          <li>Points: {currentScore} </li>
-          <li>Player: Sasha</li>
-        </ul>
+        <div className="points-player">
+          <span><strong>Player:</strong> Sasha </span> &nbsp;
+          <span><strong>Points:</strong> {currentScore} </span> 
+        </div>
       </div>
     </div>        
   );

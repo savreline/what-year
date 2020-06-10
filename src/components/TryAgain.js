@@ -6,39 +6,51 @@ class TryAgain extends Component {
       event.preventDefault();
       this.props.nextState();
     };
+    handleEnter = (event) => {
+      if (event.which === 13) {
+        this.handleSubmit(event);
+      }
+    };
+    componentDidMount(){
+      document.addEventListener('keydown', this.handleEnter, false);
+    }
+    componentWillUnmount(){
+      document.removeEventListener('keydown', this.handleEnter, false);
+    }
+
     hint() {
       let currentDiff = this.props.currentDiff;
       if (currentDiff >= 50) {
-        return 'SIGNIFICANTLY OVER';
+        return 'significantly over';
       } else if (currentDiff >= 20) {
-        return 'OVER';
+        return 'over';
       } else if (currentDiff > 0) {
-        return 'SLIGHTLY OVER';  
+        return 'slightly over';  
       } else if (currentDiff >= -20) {
-        return 'UNDER';
+        return 'slightly under';
       } else if (currentDiff >= -50) {
-        return 'SLIGHTLY UNDER';    
+        return 'under';    
       } else {
-        return 'SIGNIFICANTLY UNDER';  
+        return 'significantly under';  
       }
     }
 
     numOfTries() {
       switch(this.props.numberOfTries) {
-        case 1: return <span><strong><em>ONE</em></strong> try </span>;
-        case 2: return <span><strong><em>TWO</em></strong> tries </span>;
-        case 3: return <span><strong><em>THREE</em></strong> tries </span>;
-        default: return <span><strong><em>ZERO</em></strong> tries </span>;
+        case 1: return <span><strong><em>one</em></strong> try </span>;
+        case 2: return <span><strong><em>two</em></strong> tries </span>;
+        case 3: return <span><strong><em>three</em></strong> tries </span>;
+        default: return <span><strong><em>zero</em></strong> tries </span>;
       }
     }
   
     render() {
       return (
-        <div className="try-again">
-          <ul className="points">
-            <li>Try again: your answer is <strong><em>{this.hint()}</em></strong>!</li>
-            <li>You have {this.numOfTries()} left!</li>
-          </ul>     
+        <div className="body" onKeyPress={this.onKeyPress}>
+          <div className="points">
+            <p> Try again: your answer is <strong><em>{this.hint()}</em></strong>! </p>
+            <p> You have {this.numOfTries()} left! </p>
+          </div>     
           <form onSubmit={this.handleSubmit}>
             <button type="submit" className="btn">
               OK    
