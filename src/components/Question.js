@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 class Question extends Component {
   handleSubmit = (event) => {
     event.preventDefault();
-    this.props.nextState(this.yearEntered.value);
+    this.props.nextState(Number(this.yearEntered.value));
     this.yearEntered.value = '';
   };
   componentDidMount(){

@@ -1,9 +1,7 @@
-.header,
-.body {
+.App {
     font-family: Georgia, serif;
     margin: auto;
     width: 60%;
-    text-align: center;
 }
 
 h1 {
@@ -28,6 +26,8 @@ h1 {
     border-radius: 25px;
     font-size: 20px;
 }
+
+p,
 form,
 .title,
 .points-player,
@@ -39,7 +39,14 @@ form,
 .question {
     text-align: left;
 }
+h1,
+form,
+.points-player {
+    text-align: center;
+}
 
+.btn,
+.name-input,
 .input-field {
     font-family: Georgia, serif;
     font-size: 20px;
@@ -47,10 +54,10 @@ form,
     padding: 5px 5px;
 }
 .btn {
-    font-family: Georgia, serif;
-    font-size: 20px;
     height: 40px;
     width: 200px;
-    margin: 10px;
-    padding: 5px 5px;
+}
+.name-input {
+    height: 30px;
+    width: 300px; 
 }
