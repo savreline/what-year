@@ -1,9 +1,11 @@
 import config from  './config';
 import express from 'express';
 import apiRouter from './api';
+import bodyParser from 'body-parser';
 const server = express();
 
 server.set('view engine', 'ejs');
+server.use(bodyParser.json());
 
 server.get('/', (req, res) => {
   res.render('index', {

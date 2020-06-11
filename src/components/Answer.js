@@ -27,7 +27,7 @@ class Answer extends Component {
           </div>     
           <form onSubmit={this.handleSubmit}>
             <button type="submit" className="btn">
-              OK    
+              Next Question    
             </button>
           </form>
         </div>

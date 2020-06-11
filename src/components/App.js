@@ -4,6 +4,7 @@ import ScoreBar from './ScoreBar';
 import Question from './Question';
 import TryAgain from './TryAgain';
 import Answer from './Answer';
+import Finish from './Finish';
 import * as api from '../api';
 
 function getRandomArbitrary(min, max) {
@@ -11,6 +12,7 @@ function getRandomArbitrary(min, max) {
 }
 
 const INITIAL_TRIES = 3;
+const QUESTIONS_PER_SESSION = 10;
 
 const states = {
   START: 0,
@@ -21,7 +23,7 @@ const states = {
 };
 
 export const categories = ['All Categories', 'Technology', 'Computer Science', 
-  'World History', 'Canadian History', 'US History'];
+  'World History', 'Canadian History', 'Russian History'];
 
 class App extends Component {
   constructor(props) {
@@ -31,12 +33,15 @@ class App extends Component {
     this.currentName = '';
     this.currentDiff = 0;
     this.numberOfTries = INITIAL_TRIES;
+    this.questionsLeft = QUESTIONS_PER_SESSION;
     this.completedQuestions = [];
+    // this.fetchScores();
   }
 
   state = {
     currentState: states.START,
     currentScore: 0,
+    scores: []
   };
 
   /* Determine the next state after some form been submitted.
@@ -88,7 +93,30 @@ class App extends Component {
         break;
       }
       case states.ANSWER: {
+        this.questionsLeft--;
+        if (this.questionsLeft === 0) {
+          this.addPlayer({
+            playerName: this.currentName,
+            score: this.state.currentScore,
+            completedQuestions: this.completedQuestions
+          });
+          this.fetchScores();
+        } else {
+          this.fetchQuestion();
+        }
+        break;
+      }
+      case states.FINISH: {
+        if (Number(category) === 0) {
+          this.allCategories = true;
+        }
+        this.questionsLeft = QUESTIONS_PER_SESSION;
+        this.allCategories = false;
+        this.currentCategory = category;
         this.fetchQuestion();
+        this.setState({
+          currentScore: 0
+        });
       }
     }
   };
@@ -125,6 +153,19 @@ class App extends Component {
       });
   };
 
+  addPlayer = (player) => {
+    api.addPlayer(player);
+  }
+
+  fetchScores = () => {
+    api.fetchScores().then(res => {
+      this.setState({
+        currentState: states.FINISH,
+        scores: res
+      });
+    });
+  }
+
   /* If a questions been fetched, return its text */
   lookupQuestionText = () => {
     if (this.currentQuestion)
@@ -153,12 +194,18 @@ class App extends Component {
           answer={this.currentQuestion.answer}
           points={this.calculateScore()}
           nextState={this.nextState} />;
+      case states.FINISH:
+        return <Finish
+          scores={this.state.scores}
+          currentScore={this.state.currentScore}
+          nextState={this.nextState}/>;
     }
   };
 
   /* Should the score bar be rendered? */
   lookupScoreBar = () => {
-    if (this.state.currentState !== states.START) {
+    if (this.state.currentState !== states.START
+      && this.state.currentState !== states.FINISH) {
       return <ScoreBar 
         currentName={this.currentName}
         currentScore={this.state.currentScore} />;

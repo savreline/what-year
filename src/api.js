@@ -5,3 +5,13 @@ export const fetchQuestion = questionId => {
   return axios.get(`/api/question/${questionId}`)
     .then(res => res.data);
 };
+
+export const fetchScores = () => {
+  return axios.get('/api/players')
+    .then(res => res.data);
+};
+
+export const addPlayer = player => {
+  return axios.post('/api/players', player)
+    .then(res => res.data);
+};

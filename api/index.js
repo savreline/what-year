@@ -30,4 +30,33 @@ router.get('/question/:questionId', (req, res) => {
     });
 });
 
+router.get('/players', (req, res) => {
+  mdb.collection('players').find({})
+    .project({
+      playerName: 1,
+      score: 1
+    })
+    .sort({ 
+      score: -1 
+    })
+    .toArray()
+    .then(items => {
+      res.send(items);
+    });
+});
+
+router.post('/players', (req, res) => {
+  let player = req.body;
+  mdb.collection('players').findOneAndUpdate(
+    { 'playerName': player.playerName },
+    { $inc: { 'score': player.score },
+      $set: { 'completedQuestions': player.completedQuestions } },
+  ).then(() => { 
+    res.send('OK'); 
+  }).catch(error => {
+    console.error(error);
+    res.status(404).send('Bad Request');
+  });
+});
+
 export default router;
