@@ -18,11 +18,20 @@ class Answer extends Component {
       document.removeEventListener('keydown', this.handleEnter, false);
     }
     
+    isAnswerCorrect = (isCorrect) => {
+      if (isCorrect) {
+        return 'You got it right on! ';
+      } else {
+        return 'Out of tries! ';
+      }
+    }
+    
     render() {
       return (
         <div className="body">
           <div className="points">
-            <p> The correct answer is {this.props.answer}. </p>
+            <p> {this.isAnswerCorrect(this.props.isCorrect)}
+              The correct answer is {this.props.answer}. </p>
             <p> You earned {this.props.points} points on this question. </p>
           </div>     
           <form onSubmit={this.handleSubmit}>
@@ -36,6 +45,7 @@ class Answer extends Component {
 }
 
 Answer.propTypes = {
+  isCorrect: PropTypes.bool.isRequired,
   answer: PropTypes.number.isRequired,
   points: PropTypes.number.isRequired,
   nextState: PropTypes.func.isRequired,

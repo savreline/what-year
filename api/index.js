@@ -50,13 +50,26 @@ router.post('/players', (req, res) => {
   mdb.collection('players').findOneAndUpdate(
     { 'playerName': player.playerName },
     { $inc: { 'score': player.score },
-      $set: { 'completedQuestions': player.completedQuestions } },
+      $set: { 'completedQuestions': player.completedQuestions,
+        'completedCategories': player.completedCategories }},
   ).then(() => { 
     res.send('OK'); 
   }).catch(error => {
     console.error(error);
     res.status(404).send('Bad Request');
   });
+});
+
+router.get('/players/:playerName', (req, res) => {
+  mdb.collection('players')
+    .findOne({ playerName: req.params.playerName })
+    .then(player => {
+      res.send(player);
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(404).send('Bad request');
+    });
 });
 
 export default router;

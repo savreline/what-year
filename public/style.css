@@ -45,6 +45,7 @@ form,
 }
 
 .btn,
+.quit,
 .name-input,
 .input-field {
     font-family: Georgia, serif;
@@ -55,6 +56,12 @@ form,
 .btn {
     height: 40px;
     width: 200px;
+}
+.quit {
+    border: 2px solid orange;
+    background: rgb(255, 255, 0, 0.75);
+    height: 40px;
+    width: 500px;
 }
 .name-input {
     height: 30px;

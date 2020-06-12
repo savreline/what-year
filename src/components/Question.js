@@ -15,6 +15,7 @@ class Question extends Component {
     return (
       <div className="body">
         <div className="question">
+          <strong>Question {this.props.questionNo} out of 10. </strong>
           {this.props.question}
         </div>
         <form onSubmit={this.handleSubmit}>
@@ -32,6 +33,7 @@ class Question extends Component {
 }
 
 Question.propTypes = {
+  questionNo: PropTypes.number.isRequired,
   question: PropTypes.string.isRequired,
   nextState: PropTypes.func.isRequired,
 };

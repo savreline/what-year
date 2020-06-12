@@ -15,3 +15,8 @@ export const addPlayer = player => {
   return axios.post('/api/players', player)
     .then(res => res.data);
 };
+
+export const fetchPlayer = playerName => {
+  return axios.get(`/api/players/${playerName}`)
+    .then(res => res.data);
+};

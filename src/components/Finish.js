@@ -38,6 +38,11 @@ class Finish extends Component {
               )}
             </tbody>
           </table>
+          <form>
+            <button value='-1' className='quit' onClick={this.handleSubmit}> 
+              QUIT GAME 
+            </button>
+          </form>
         </div>
       </div>
     );

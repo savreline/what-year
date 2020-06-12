@@ -11,15 +11,17 @@ function getRandomArbitrary(min, max) {
   return Math.floor(Math.random() * (max - min)) + min;
 }
 
-const INITIAL_TRIES = 3;
-const QUESTIONS_PER_SESSION = 10;
+const INITIAL_TRIES = 2;
+const QUESTIONS_PER_SESSION = 2;
+const NUM_OF_CATEGORIES = 5;
 
 const states = {
   START: 0,
   QUESTION: 1,
   TRYAGAIN: 2,
   ANSWER: 3,
-  FINISH: 4
+  FINISH: 4,
+  QUIT: 5
 };
 
 export const categories = ['All Categories', 'Technology', 'Computer Science', 
@@ -32,9 +34,12 @@ class App extends Component {
     this.currentCategory = 0;
     this.currentName = '';
     this.currentDiff = 0;
+    this.isCorrect = false;
     this.numberOfTries = INITIAL_TRIES;
     this.questionsLeft = QUESTIONS_PER_SESSION;
     this.completedQuestions = [];
+    this.completedCategories 
+      = new Array(NUM_OF_CATEGORIES + 1).fill(false);
     // this.fetchScores();
   }
 
@@ -54,20 +59,44 @@ class App extends Component {
     }
 
     switch (this.state.currentState) {
+
+      /* START: Set category, set name.
+      * Fetch question and go to QUESTION STATE. */
       case states.START: {
+        if (answer === '') {
+          window.alert('Please enter a name.');
+          return;
+        }
         if (Number(category) === 0) {
           this.allCategories = true;
         }
+        if (this.completedCategories[Number(category)]) {
+          window.alert('You already answered all questions' +
+           'in this category. Pick another one');
+          return;
+        }
         this.currentName = answer;
         this.currentCategory = category;
+        this.fetchPlayer(answer);
         this.fetchQuestion();
         this.setState({
           currentState: states.QUESTION
         });
         break;
       }
+
+      /* QUESTION:
+      * If the answer is correct, compute score and go to answer. 
+      * If out of tries, go to answer. 
+      * Else go to try again. */
       case states.QUESTION: {
         if (this.currentDiff === 0) {
+          this.isCorrect = true;
+          this.setState({
+            currentScore: this.state.currentScore + this.calculateScore(),
+            currentState: states.ANSWER
+          });
+        } else if (this.numberOfTries === 0) {
           this.setState({
             currentScore: this.state.currentScore + this.calculateScore(),
             currentState: states.ANSWER
@@ -79,26 +108,25 @@ class App extends Component {
         }
         break;
       }
+
+      /* TRY AGAIN: Go back to question. */
       case states.TRYAGAIN: {
-        if (this.numberOfTries === 0) {
-          this.setState({
-            currentScore: this.state.currentScore + this.calculateScore(),
-            currentState: states.ANSWER
-          });
-        } else {
-          this.setState({
-            currentState: states.QUESTION
-          });
-        }
+        this.setState({
+          currentState: states.QUESTION
+        });
         break;
       }
+
+      /* ANSWER: If no more questions left, go to score board.
+      * Else, get the next question. */
       case states.ANSWER: {
         this.questionsLeft--;
         if (this.questionsLeft === 0) {
           this.addPlayer({
             playerName: this.currentName,
             score: this.state.currentScore,
-            completedQuestions: this.completedQuestions
+            completedQuestions: this.completedQuestions,
+            completedCategories: this.completedCategories
           });
           this.fetchScores();
         } else {
@@ -106,9 +134,24 @@ class App extends Component {
         }
         break;
       }
+
+      /* FINISH: Reset and go to question.
+      * Or quit if category is -1. */
       case states.FINISH: {
+        if (Number(category) === -1) {
+          this.setState({
+            currentState: states.QUIT
+          });
+          return;
+        }
         if (Number(category) === 0) {
           this.allCategories = true;
+        }
+        this.checkCategories();
+        if (this.completedCategories[Number(category)]) {
+          window.alert('You already answered all questions' +
+           'in this category. Pick another one');
+          return;
         }
         this.questionsLeft = QUESTIONS_PER_SESSION;
         this.allCategories = false;
@@ -127,19 +170,31 @@ class App extends Component {
     return Math.max(score, 0);
   }
 
+  checkCategories = () => {
+    for (let i = 1; i < NUM_OF_CATEGORIES + 1; i++) {
+      let arr = Array.from(Array(QUESTIONS_PER_SESSION).keys())
+        .map(x => ++x + i * 100);
+      if (arr.every(x => this.completedQuestions.includes(x))) {
+        this.completedCategories[i] = true;
+      }
+    }  
+  }
+
   /* Pick a random category if in the "all categories mode".
+  * Check that category still has some questions.
   * Pick a question ID not seen before.
   * Fetch the question from the API and put it on the state.
   * Reset differences and the number of tries. */
   fetchQuestion = () => {
     if (this.allCategories === true) {
+      this.checkCategories(); // TODO
       this.currentCategory = getRandomArbitrary(1, 5);
     }
 
     let questionId;
     do { questionId = Math.ceil(Math.random() * 10) 
       + this.currentCategory * 100; }
-    while (this.completedQuestions.includes(questionId));
+    while (this.completedQuestions.includes(questionId)); // TODO
 
     api.fetchQuestion(questionId)
       .then(questionObj => {
@@ -148,6 +203,7 @@ class App extends Component {
           currentState: states.QUESTION,
         });
         this.currentDiff = 0;
+        this.isCorrect = false;
         this.numberOfTries = INITIAL_TRIES;
         this.completedQuestions.push(questionObj.id);
       });
@@ -155,6 +211,15 @@ class App extends Component {
 
   addPlayer = (player) => {
     api.addPlayer(player);
+  }
+
+  fetchPlayer = (playerName) => {
+    api.fetchPlayer(playerName).then(res => {
+      if (res !== '') {
+        this.completedQuestions = res.completedQuestions;
+        this.completedCategories = res.completedCategories;
+      }
+    });
   }
 
   fetchScores = () => {
@@ -174,6 +239,10 @@ class App extends Component {
       return '...';
   };
 
+  lookupQuestionNo = () => {
+    return 10 - this.questionsLeft + 1;
+  }
+
   /* Render the correct app body given the current state */
   lookupBody = () => {
     switch (this.state.currentState) {
@@ -181,7 +250,8 @@ class App extends Component {
         return <Start 
           nextState={this.nextState} />;
       case states.QUESTION:
-        return <Question 
+        return <Question
+          questionNo={this.lookupQuestionNo()} 
           question={this.lookupQuestionText()}
           nextState={this.nextState} />;
       case states.TRYAGAIN:         
@@ -191,6 +261,7 @@ class App extends Component {
           nextState={this.nextState} />;
       case states.ANSWER:
         return <Answer
+          isCorrect={this.isCorrect}
           answer={this.currentQuestion.answer}
           points={this.calculateScore()}
           nextState={this.nextState} />;
@@ -198,14 +269,19 @@ class App extends Component {
         return <Finish
           scores={this.state.scores}
           currentScore={this.state.currentScore}
-          nextState={this.nextState}/>;
+          nextState={this.nextState} />;
+      case states.QUIT:
+        return <div className='body'> 
+          <p> Thank you for playing! </p>
+        </div>;
     }
   };
 
   /* Should the score bar be rendered? */
   lookupScoreBar = () => {
     if (this.state.currentState !== states.START
-      && this.state.currentState !== states.FINISH) {
+      && this.state.currentState !== states.FINISH
+      && this.state.currentState !== states.QUIT) {
       return <ScoreBar 
         currentName={this.currentName}
         currentScore={this.state.currentScore} />;
