@@ -52,6 +52,7 @@ router.post('/players', (req, res) => {
     { $inc: { 'score': player.score },
       $set: { 'completedQuestions': player.completedQuestions,
         'completedCategories': player.completedCategories }},
+    { upsert: true }
   ).then(() => { 
     res.send('OK'); 
   }).catch(error => {

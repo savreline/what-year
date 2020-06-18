@@ -8,11 +8,11 @@ import Finish from './Finish';
 import * as api from '../api';
 
 function getRandomArbitrary(min, max) {
-  return Math.floor(Math.random() * (max - min)) + min;
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 const INITIAL_TRIES = 2;
-const QUESTIONS_PER_SESSION = 2;
+const QUESTIONS_PER_SESSION = 10;
 const NUM_OF_CATEGORIES = 5;
 
 const states = {
@@ -22,6 +22,12 @@ const states = {
   ANSWER: 3,
   FINISH: 4,
   QUIT: 5
+};
+
+export const playerStatus = {
+  COMPLETED_NONE: 0,
+  COMPLETED_CAT: 1,
+  COMPLETED_ALL: 2
 };
 
 export const categories = ['All Categories', 'Technology', 'Computer Science', 
@@ -37,6 +43,7 @@ class App extends Component {
     this.isCorrect = false;
     this.numberOfTries = INITIAL_TRIES;
     this.questionsLeft = QUESTIONS_PER_SESSION;
+    this.playerStatus = playerStatus.COMPLETED_NONE;
     this.completedQuestions = [];
     this.completedCategories 
       = new Array(NUM_OF_CATEGORIES + 1).fill(false);
@@ -49,9 +56,10 @@ class App extends Component {
     scores: []
   };
 
-  /* Determine the next state after some form been submitted.
-  * Set the category if in the starting state.
-  * Compute difference and adjust tries if an answer is submitted. */
+  /*** I. STATES SWITCH: 
+   * Determine the next state after 
+   * some form been submitted. Set the category if in the starting state.
+   * Compute difference and adjust tries if an answer is submitted. ***/
   nextState = (answer, category) => {
     if (typeof answer === 'number') {
       this.currentDiff = answer - this.currentQuestion.answer;
@@ -67,20 +75,29 @@ class App extends Component {
           window.alert('Please enter a name.');
           return;
         }
-        if (Number(category) === 0) {
-          this.allCategories = true;
-        }
-        if (this.completedCategories[Number(category)]) {
-          window.alert('You already answered all questions' +
-           'in this category. Pick another one');
-          return;
-        }
-        this.currentName = answer;
-        this.currentCategory = category;
-        this.fetchPlayer(answer);
-        this.fetchQuestion();
-        this.setState({
-          currentState: states.QUESTION
+        this.fetchPlayer(answer).then(res => {
+          if (res !== '') {
+            this.completedQuestions = res.completedQuestions;
+            this.completedCategories = res.completedCategories;
+          } else {
+            this.completedQuestions = [];
+            this.completedCategories 
+              = new Array(NUM_OF_CATEGORIES + 1).fill(false);
+          }
+          if (Number(category) === 0) {
+            this.allCategories = true;
+          }
+          if (this.completedCategories[Number(category)]) {
+            window.alert('You already answered all questions' +
+               'in this category. Pick another one');
+            return;
+          }
+          this.currentName = answer;
+          this.currentCategory = category;
+          this.fetchQuestion();
+          this.setState({
+            currentState: states.QUESTION
+          });    
         });
         break;
       }
@@ -122,13 +139,7 @@ class App extends Component {
       case states.ANSWER: {
         this.questionsLeft--;
         if (this.questionsLeft === 0) {
-          this.addPlayer({
-            playerName: this.currentName,
-            score: this.state.currentScore,
-            completedQuestions: this.completedQuestions,
-            completedCategories: this.completedCategories
-          });
-          this.fetchScores();
+          this.addPlayer();
         } else {
           this.fetchQuestion();
         }
@@ -146,15 +157,15 @@ class App extends Component {
         }
         if (Number(category) === 0) {
           this.allCategories = true;
+        } else {
+          this.allCategories = false;
         }
-        this.checkCategories();
         if (this.completedCategories[Number(category)]) {
           window.alert('You already answered all questions' +
            'in this category. Pick another one');
           return;
         }
         this.questionsLeft = QUESTIONS_PER_SESSION;
-        this.allCategories = false;
         this.currentCategory = category;
         this.fetchQuestion();
         this.setState({
@@ -170,6 +181,9 @@ class App extends Component {
     return Math.max(score, 0);
   }
 
+  /* Checks if there are any categories for which all questions
+  * been answered for this particular user. If yes, sets the 
+  * respective entry in the categories array to true. */
   checkCategories = () => {
     for (let i = 1; i < NUM_OF_CATEGORIES + 1; i++) {
       let arr = Array.from(Array(QUESTIONS_PER_SESSION).keys())
@@ -177,24 +191,41 @@ class App extends Component {
       if (arr.every(x => this.completedQuestions.includes(x))) {
         this.completedCategories[i] = true;
       }
-    }  
+    }
+    if (this.completedCategories
+      .slice(1, NUM_OF_CATEGORIES + 1)
+      .every(x => x === true)) {
+      this.completedCategories[0] = true;
+    }
   }
 
-  /* Pick a random category if in the "all categories mode".
-  * Check that category still has some questions.
-  * Pick a question ID not seen before.
-  * Fetch the question from the API and put it on the state.
-  * Reset differences and the number of tries. */
+  /*** II. FETCHES:
+   * Pick a random category if in the "all categories mode".
+   * Check that category still has some questions.
+   * Pick a question ID not seen before.
+   * Fetch the question from the API and put it on the state.
+   * Reset differences and the number of tries. ***/
   fetchQuestion = () => {
-    if (this.allCategories === true) {
-      this.checkCategories(); // TODO
-      this.currentCategory = getRandomArbitrary(1, 5);
+    this.checkCategories();
+    if (this.completedCategories[0] === true) {
+      this.playerStatus = playerStatus.COMPLETED_ALL;
+      this.addPlayer();
+      return;
+    } else if (this.allCategories !== true &&
+      this.completedCategories[this.currentCategory] === true) {
+      this.playerStatus = playerStatus.COMPLETED_CAT;
+      this.addPlayer();
+      return;
     }
 
     let questionId;
-    do { questionId = Math.ceil(Math.random() * 10) 
-      + this.currentCategory * 100; }
-    while (this.completedQuestions.includes(questionId)); // TODO
+    do { 
+      if (this.allCategories === true) {
+        this.currentCategory = getRandomArbitrary(1, 5);
+      }
+      questionId = Math.ceil(Math.random() * 10) 
+        + this.currentCategory * 100;
+    } while (this.completedQuestions.includes(questionId));
 
     api.fetchQuestion(questionId)
       .then(questionObj => {
@@ -209,17 +240,21 @@ class App extends Component {
       });
   };
 
-  addPlayer = (player) => {
-    api.addPlayer(player);
+  addPlayer = () => {
+    this.checkCategories();
+    let player = {
+      playerName: this.currentName,
+      score: this.state.currentScore,
+      completedQuestions: this.completedQuestions,
+      completedCategories: this.completedCategories
+    };
+    api.addPlayer(player).then(() => {
+      this.fetchScores();
+    });
   }
 
   fetchPlayer = (playerName) => {
-    api.fetchPlayer(playerName).then(res => {
-      if (res !== '') {
-        this.completedQuestions = res.completedQuestions;
-        this.completedCategories = res.completedCategories;
-      }
-    });
+    return api.fetchPlayer(playerName);
   }
 
   fetchScores = () => {
@@ -243,7 +278,8 @@ class App extends Component {
     return 10 - this.questionsLeft + 1;
   }
 
-  /* Render the correct app body given the current state */
+  /*** III. RENDERING 
+   * Render the correct app body given the current state ***/
   lookupBody = () => {
     switch (this.state.currentState) {
       case states.START:
@@ -269,6 +305,7 @@ class App extends Component {
         return <Finish
           scores={this.state.scores}
           currentScore={this.state.currentScore}
+          playerStatus={this.playerStatus}
           nextState={this.nextState} />;
       case states.QUIT:
         return <div className='body'> 

@@ -6,7 +6,6 @@ class Start extends Component {
   handleSubmit = (event) => {
     event.preventDefault();
     this.props.nextState(this.nameEntered.value, event.currentTarget.value);
-    this.nameEntered.value = '';
   };
   componentDidMount(){
     this.nameEntered.focus();
