@@ -1,11 +1,15 @@
 const path = require('path');
 
 module.exports = {
-  entry: './src/index.js',
+  entry: {
+    bundle: './src/index.js',
+    server: './server.js'
+  },
   output: {
     path: path.resolve('public'),
-    filename: 'bundle.js',
+    filename: '[name].js',
   },
+  target: 'node', // in order to ignore built-in modules like path, fs, etc. 
   module: {
     rules: [
       {
