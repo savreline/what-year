@@ -30,6 +30,20 @@ router.get('/question/:questionId', (req, res) => {
     });
 });
 
+router.post('/question/:questionId', (req, res) => {
+  let answer = req.body.answer;
+  mdb.collection('questions').findOneAndUpdate(
+    { 'id': Number(req.params.questionId) },
+    { $push: { 'answers': answer }},
+    { upsert: true }
+  ).then(() => { 
+    res.send('OK'); 
+  }).catch(error => {
+    console.error(error);
+    res.status(404).send('Bad Request');
+  });
+});
+
 router.get('/players', (req, res) => {
   mdb.collection('players').find({})
     .project({

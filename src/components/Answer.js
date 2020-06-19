@@ -47,6 +47,7 @@ class Answer extends Component {
 Answer.propTypes = {
   isCorrect: PropTypes.bool.isRequired,
   answer: PropTypes.number.isRequired,
+  answers: PropTypes.array.isRequired,
   points: PropTypes.number.isRequired,
   nextState: PropTypes.func.isRequired,
 };

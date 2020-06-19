@@ -44,6 +44,7 @@ class App extends Component {
     this.numberOfTries = INITIAL_TRIES;
     this.questionsLeft = QUESTIONS_PER_SESSION;
     this.playerStatus = playerStatus.COMPLETED_NONE;
+    this.answers = [];
     this.completedQuestions = [];
     this.completedCategories 
       = new Array(NUM_OF_CATEGORIES + 1).fill(false);
@@ -64,6 +65,7 @@ class App extends Component {
     if (typeof answer === 'number') {
       this.currentDiff = answer - this.currentQuestion.answer;
       this.numberOfTries--;
+      this.addAnswer(this.currentQuestion.id, answer);
     }
 
     switch (this.state.currentState) {
@@ -109,15 +111,18 @@ class App extends Component {
       case states.QUESTION: {
         if (this.currentDiff === 0) {
           this.isCorrect = true;
-          this.setState({
-            currentScore: this.state.currentScore + this.calculateScore(),
-            currentState: states.ANSWER
-          });
-        } else if (this.numberOfTries === 0) {
-          this.setState({
-            currentScore: this.state.currentScore + this.calculateScore(),
-            currentState: states.ANSWER
-          });
+        }
+        
+        if (this.currentDiff === 0 ||
+           this.numberOfTries === 0) {
+          api.fetchQuestion(this.currentQuestion.id)
+            .then(questionObj => {
+              this.answers = questionObj.answers;
+              this.setState({
+                currentScore: this.state.currentScore + this.calculateScore(),
+                currentState: states.ANSWER
+              });
+            });
         } else {
           this.setState({
             currentState: states.TRYAGAIN
@@ -240,6 +245,10 @@ class App extends Component {
       });
   };
 
+  addAnswer = (questionId, answer) => {
+    return api.addAnswer(questionId, {answer});
+  }
+
   addPlayer = () => {
     this.checkCategories();
     let player = {
@@ -299,6 +308,7 @@ class App extends Component {
         return <Answer
           isCorrect={this.isCorrect}
           answer={this.currentQuestion.answer}
+          answers={this.answers}
           points={this.calculateScore()}
           nextState={this.nextState} />;
       case states.FINISH:

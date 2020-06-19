@@ -6,6 +6,11 @@ export const fetchQuestion = questionId => {
     .then(res => res.data);
 };
 
+export const addAnswer = (questionId, answer) => {
+  return axios.post(`/api/question/${questionId}`, answer)
+    .then(res => res.data);
+};
+
 export const fetchScores = () => {
   return axios.get('/api/players')
     .then(res => res.data);
