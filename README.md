@@ -25,3 +25,10 @@ App.defaultProps = {
 
 **CSS**
 https://www.w3schools.com/cssref/css_websafe_fonts.asp
+
+## Setup Notes to Self
+* confidental.js is ignored from the repo
+* `npm i`
+* add `.\node_modules\.bin` to path
+* `npm start` or `node public\server.js`
+* `npm run dev`

@@ -13,7 +13,7 @@ class Start extends Component {
 
   render() {
     return (
-      <div className="body">
+      <div className="border shadow my-4 p-3 text-justify">
         <p>
             Welcome to <em>what year was that</em> game. Enter your nick name below, 
             pick a category and start playing! For each question, type in your best guess 
@@ -30,10 +30,10 @@ class Start extends Component {
             wouldn&apos;t be promted with the questions you already answered. In the future, 
             a username login system would be added to address this issue.
         </p>
-        <form>
+        <form className="text-center">
           <input type="text"
-            placeholder="Enter a nickname..."
-            className="name-input"
+            placeholder="Enter a name..."
+            className="form-control form-control-lg my-3"
             ref={(c) => { this.nameEntered = c; }} />
           <Categories 
             handleSubmit={this.handleSubmit} />        

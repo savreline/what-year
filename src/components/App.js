@@ -337,10 +337,10 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
-        <h1><div className="title"> 
-          What Year Was That? 
-        </div></h1>
+      <div className="container">
+        <h1 className="border shadow my-4 p-3 text-center bg-info text-light">
+          What Year Was That?
+        </h1>
         {this.lookupScoreBar()}
         {this.lookupBody()}
       </div>
