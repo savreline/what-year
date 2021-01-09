@@ -4,12 +4,15 @@ import { categories } from './App';
 
 const Categories = ({handleSubmit}) => {
   return (
-    <div>
+    <div className="row row-cols-sm-1 row-cols-md-2 row-cols-lg-3
+      justify-content-center px-2 py-0">
       {categories.map((category, id) =>
-        <button key={id} value={id} onClick={handleSubmit} 
-        className="btn btn-info btn-lg m-1">
-          {category}
-        </button>  
+        <div key={id} value={id} className="col p-1">
+          <button onClick={handleSubmit} 
+          className="btn btn-block btn-lg btn-secondary">
+            {category}
+          </button>
+        </div>  
       )}
     </div>         
   );

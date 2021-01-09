@@ -338,9 +338,10 @@ class App extends Component {
   render() {
     return (
       <div className="container">
-        <h1 className="border shadow my-4 p-3 text-center bg-info text-light">
+        <div className="display-4 text-center border shadow 
+          bg-secondary text-light my-4 p-3">
           What Year Was That?
-        </h1>
+        </div>
         {this.lookupScoreBar()}
         {this.lookupBody()}
       </div>
