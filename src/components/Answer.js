@@ -28,14 +28,12 @@ class Answer extends Component {
     
     render() {
       return (
-        <div className="body">
-          <div className="points">
-            <p> {this.isAnswerCorrect(this.props.isCorrect)}
-              The correct answer is {this.props.answer}. </p>
-            <p> You earned {this.props.points} points on this question. </p>
-          </div>     
+        <div className="border shadow text-justify my-4 p-3">
+          <p> {this.isAnswerCorrect(this.props.isCorrect)}
+            The correct answer is <strong>{this.props.answer}</strong>. </p>
+          <p> You earned {this.props.points} points on this question. </p>   
           <form onSubmit={this.handleSubmit}>
-            <button type="submit" className="btn">
+            <button type="submit" className="btn btn-block btn-lg btn-secondary m-1">
               Next Question    
             </button>
           </form>

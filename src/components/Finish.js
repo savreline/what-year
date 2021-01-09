@@ -34,13 +34,13 @@ class Finish extends Component {
   
   render() {
     return (
-      <div className="body">
+      <div className="border shadow text-justify my-4 p-3">
         {this.fetchMessage()}
         {this.fetchButtons()}
-        <div className="scoreboard">
-          <table>
-            <caption>Current Scoreboard</caption>
-            <thead>
+        <div className="row justify-content-center">
+          <h2 className="mt-3">Current Leaderboard</h2>
+          <table className="table lgtext w-75">
+            <thead className="thead-light">
               <tr>
                 <th>Rank</th>
                 <th>Name</th>
@@ -57,12 +57,13 @@ class Finish extends Component {
               )}
             </tbody>
           </table>
-          <form>
-            <button value='-1' className='quit' onClick={this.handleSubmit}> 
-              QUIT GAME 
-            </button>
-          </form>
         </div>
+        <form>
+          <button value='-1' className='quit' onClick={this.handleSubmit}
+            className="btn btn-block btn-lg btn-secondary m-1"> 
+            QUIT GAME 
+          </button>
+        </form>
       </div>
     );
   }
