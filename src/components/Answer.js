@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import BarChart from './BarChart';
 
 class Answer extends Component {
     handleSubmit = (event) => {
@@ -31,7 +32,8 @@ class Answer extends Component {
         <div className="border shadow text-justify my-4 p-3">
           <p> {this.isAnswerCorrect(this.props.isCorrect)}
             The correct answer is <strong>{this.props.answer}</strong>. </p>
-          <p> You earned {this.props.points} points on this question. </p>   
+          <p> You earned {this.props.points} points on this question. </p>
+          <BarChart />
           <form onSubmit={this.handleSubmit}>
             <button type="submit" className="btn btn-block btn-lg btn-secondary m-1">
               Next Question    
