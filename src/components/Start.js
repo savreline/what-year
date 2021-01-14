@@ -15,7 +15,7 @@ class Start extends Component {
     return (
       <div className="border shadow my-4 p-3 text-justify">
         <p>
-            Welcome to <em>what year was that</em> game. Enter your nick name below, 
+            Welcome to <em>what year was that</em> game. Enter your a name below, 
             pick a category and start playing! For each question, type in your best guess 
             as to in which year the given event took place. You get three tries! After each
             try you will be told if your guess over estimated or under estimated the correct

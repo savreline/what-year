@@ -9,3 +9,8 @@
 
 ## Connecting to Mongo Atlas
 Mongo Atlas -> Cluster -> Connect
+
+## Cloning and Restoring MongoDB
+* https://www.mongodbmanager.com/clone-mongodb-collection
+* `.\mongodump --db=whatyear`
+* `.\mongorestore -d whatyear dump/whatyear`

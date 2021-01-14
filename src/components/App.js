@@ -53,6 +53,7 @@ class App extends Component {
 
   state = {
     currentState: states.START,
+    latestAnswer: 0,
     currentScore: 0,
     scores: []
   };
@@ -63,6 +64,7 @@ class App extends Component {
    * Compute difference and adjust tries if an answer is submitted. ***/
   nextState = (answer, category) => {
     if (typeof answer === 'number') {
+      this.state.latestAnswer = answer;
       this.currentDiff = answer - this.currentQuestion.answer;
       this.numberOfTries--;
       this.addAnswer(this.currentQuestion.id, answer);
@@ -307,8 +309,9 @@ class App extends Component {
       case states.ANSWER:
         return <Answer
           isCorrect={this.isCorrect}
+          latestAnswer={this.state.latestAnswer}
           answer={this.currentQuestion.answer}
-          answers={this.answers}
+          answers={this.currentQuestion.answers}
           points={this.calculateScore()}
           nextState={this.nextState} />;
       case states.FINISH:

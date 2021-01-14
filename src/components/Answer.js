@@ -33,7 +33,9 @@ class Answer extends Component {
           <p> {this.isAnswerCorrect(this.props.isCorrect)}
             The correct answer is <strong>{this.props.answer}</strong>. </p>
           <p> You earned {this.props.points} points on this question. </p>
-          <BarChart />
+          <BarChart 
+            answer={this.props.latestAnswer}
+            answers={this.props.answers}/>
           <form onSubmit={this.handleSubmit}>
             <button type="submit" className="btn btn-block btn-lg btn-secondary m-1">
               Next Question    
@@ -46,6 +48,7 @@ class Answer extends Component {
 
 Answer.propTypes = {
   isCorrect: PropTypes.bool.isRequired,
+  latestAnswer: PropTypes.number.isRequired,
   answer: PropTypes.number.isRequired,
   answers: PropTypes.array.isRequired,
   points: PropTypes.number.isRequired,
