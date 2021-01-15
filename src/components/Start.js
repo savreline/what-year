@@ -21,7 +21,7 @@ class Start extends Component {
             try you will be told if your guess over estimated or under estimated the correct
             answer and you can adjust your next guess based on this hint. You can earn up to 
             1000 points for each question, reduced by the amount of tries you used and by how
-            far away your final attempt is from the correct answer. Each game session consists
+            far away your best attempt is from the correct answer. Each game session consists
             of 10 questions. Have fun!
         </p>
         <p><strong>N.B. </strong>

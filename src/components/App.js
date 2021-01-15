@@ -40,6 +40,7 @@ class App extends Component {
     this.currentCategory = 0;
     this.currentName = '';
     this.currentDiff = 0;
+    this.bestDiff = Number.POSITIVE_INFINITY;
     this.isCorrect = false;
     this.numberOfTries = INITIAL_TRIES;
     this.questionsLeft = QUESTIONS_PER_SESSION;
@@ -68,6 +69,9 @@ class App extends Component {
       this.currentDiff = answer - this.currentQuestion.answer;
       this.numberOfTries--;
       this.addAnswer(this.currentQuestion.id, answer);
+      if (Math.abs(this.currentDiff) < this.bestDiff) {
+        this.bestDiff = Math.abs(this.currentDiff);
+      }
     }
 
     switch (this.state.currentState) {
@@ -184,7 +188,7 @@ class App extends Component {
 
   calculateScore = () => {
     let score = 1000 - 100 * (INITIAL_TRIES - this.numberOfTries - 1) 
-                     - 10 * Math.abs(this.currentDiff);
+                     - 10 * Math.abs(this.bestDiff);
     return Math.max(score, 0);
   }
 
@@ -241,6 +245,7 @@ class App extends Component {
           currentState: states.QUESTION,
         });
         this.currentDiff = 0;
+        this.bestDiff = Number.POSITIVE_INFINITY;
         this.isCorrect = false;
         this.numberOfTries = INITIAL_TRIES;
         this.completedQuestions.push(questionObj.id);
