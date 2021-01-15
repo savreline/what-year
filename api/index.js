@@ -30,6 +30,14 @@ router.get('/question/:questionId', (req, res) => {
     });
 });
 
+router.get('/question/', (req, res) => { 
+  mdb.collection('questions').find({})
+    .toArray()
+    .then(items => {
+      res.send(items);
+    });
+});
+
 router.post('/question/:questionId', (req, res) => {
   let answer = req.body.answer;
   mdb.collection('questions').findOneAndUpdate(

@@ -6,6 +6,11 @@ export const fetchQuestion = questionId => {
     .then(res => res.data);
 };
 
+export const fetchQuestions = () => {
+  return axios.get(`/api/question/`)
+    .then(res => res.data);
+};
+
 export const addAnswer = (questionId, answer) => {
   return axios.post(`/api/question/${questionId}`, answer)
     .then(res => res.data);

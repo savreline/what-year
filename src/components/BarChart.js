@@ -8,6 +8,10 @@ import * as d3 from 'd3';
 // https://stackoverflow.com/questions/17723916/how-to-create-elements-depending-on-data-in-d3
 // https://stackoverflow.com/questions/20811131/javascript-remove-outlier-from-an-array
 class BarChart extends Component {
+  constructor(props) {
+    super(props);
+    this.id = "chart"+this.props.id;
+  }
   componentDidMount() {
     this.drawChart();
   }
@@ -24,14 +28,14 @@ class BarChart extends Component {
     let data = this.props.answers; 
     data = this.filterOutliers(data);
     data.push(answer);
+    let min = Math.min(...data);
+    let max = Math.max(...data);
+    let factor = (max - min) / 4 < 2 ? 2 : (max - min) / 4;
     // console.log(answer); // !!!
     // console.log(data); // !!!
-    let min = Math.min.apply(null, data);
-    let max = Math.max.apply(null, data);
-    let factor = (max - min) / 4;
 
     /* 1: set-up canvas */
-    let svg = d3.select("#chart")
+    let svg = d3.select("#"+this.id)
                 .append("svg")
                 .attr("height", height + margin.top + margin.bottom)
                 .attr("width", width + margin.right + margin.left)
@@ -46,16 +50,20 @@ class BarChart extends Component {
     // console.log(bins); // !!!
 
     /* 2b: adjust the size of the first and last bins */
-    if (bins.length > 0) {
+    if (bins.length > 1) {
       let delta = bins[1].x1-bins[1].x0;
       let len = bins.length - 1;
       bins[0].x0 = bins[0].x1 - delta;
       bins[len].x1 = bins[len].x0 + delta;
+    } else {
+      bins[0].x1 += 1;
     }
 
     /* 3: set the scales */
+    let xMin = min - factor < 0 ? 0 : min - factor;
+    let xMax = max + factor;
     let x = d3.scaleLinear()
-              .domain([min - factor, max + factor])     
+              .domain([xMin, xMax])     
               .range([0, width]);
     let y = d3.scaleLinear()
               .range([height, 0])
@@ -67,7 +75,7 @@ class BarChart extends Component {
         .enter()
         .append("rect")
         .attr("x", 1)
-        .attr("fill", d => (d.x0 <= answer && answer <= d.x1) ? "green" : "#6c757d")
+        .attr("fill", d => d.includes(answer) ? "green" : "#6c757d")
         .attr("transform", d => "translate(" + x(d.x0) + "," + y(d.length) + ")")
         .attr("width", d => x(d.x1) - x(d.x0) - 1)
         .attr("height", d => height - y(d.length));
@@ -78,38 +86,38 @@ class BarChart extends Component {
       for (let elem of bins) {
         if (elem.length > maxlen)
           maxlen = elem.length;
-        if (elem.x0 <= answer && answer <= elem.x1) {
+        if (elem.includes(answer)) {
           x0 = elem.x0;
           x1 = elem.x1;
           ym = elem.length;
         }
       }
 
-      /* 6a: append the scales */
-      let xAxis = d3.axisBottom(x)
-                    .tickFormat(d3.format("d"))
-                    .ticks(bins.length + 2);
-      let yAxis = d3.axisLeft(y)
-                    .tickFormat(d3.format("d"))
-                    .ticks(maxlen);
-      svg.append("g")
-          .style("font", "17px sans-serif")
-          .attr("transform", "translate(0," + height + ")")
-          .call(xAxis);
-      svg.append("g")
-          .style("font", "17px sans-serif")
-          .call(yAxis);
+    /* 6a: append the scales */
+    let xAxis = d3.axisBottom(x)
+                  .tickFormat(d3.format("d"))
+                  .ticks(bins.length + 2);
+    let yAxis = d3.axisLeft(y)
+                  .tickFormat(d3.format("d"))
+                  .ticks(maxlen);
+    svg.append("g")
+        .style("font", "17px sans-serif")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+    svg.append("g")
+        .style("font", "17px sans-serif")
+        .call(yAxis);
 
-      /* 6b: append the text */
-      let textArray = ['You','are','here'];
-      svg.append("text").selectAll("tspan")
-          .data(textArray)
-          .enter().append("tspan")
-          .attr("x", (x(x0) + x(x1)) / 2)
-          .attr("y", (d, i) => y(ym) + (i - 2) * barWidth - 3)
-          .attr("text-anchor", "middle")
-          .attr("font-size", "20")
-          .text( d => d );
+    /* 6b: append the text */
+    let textArray = ['You','are','here'];
+    svg.append("text").selectAll("tspan")
+        .data(textArray)
+        .enter().append("tspan")
+        .attr("x", (x(x0) + x(x1)) / 2)
+        .attr("y", (d, i) => y(ym) + (i - 2) * barWidth - 3)
+        .attr("text-anchor", "middle")
+        .attr("font-size", "20")
+        .text( d => d );
   }
 
   filterOutliers(input) {  
@@ -124,12 +132,13 @@ class BarChart extends Component {
   }
   render() {
     return <div className="d-flex justify-content-center">
-        <div id="chart"></div>
+        <div id={this.id}></div>
       </div>;
   }
 }
 
 BarChart.propTypes = {
+  id: PropTypes.number.isRequired,
   answer: PropTypes.number.isRequired,
   answers: PropTypes.array.isRequired,
 };

@@ -14,6 +14,7 @@ server.use(bodyParser.json());
 // });
 
 server.use('/api', apiRouter);
+server.use('/tests', express.static('tests'));
 server.use(express.static('public'));
 
 server.listen(config.port, () => {
