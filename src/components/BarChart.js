@@ -25,8 +25,10 @@ class BarChart extends Component {
 
     /* data */
     let answer = this.props.answer;
-    let data = this.props.answers; 
-    data = this.filterOutliers(data);
+    let data = this.props.answers;
+    if (typeof data == 'undefined') { 
+      data = []; 
+    }
     data.push(answer);
     let min = Math.min(...data);
     let max = Math.max(...data);
@@ -120,16 +122,6 @@ class BarChart extends Component {
         .text( d => d );
   }
 
-  filterOutliers(input) {  
-    let data = [...input];
-    data.sort((a,b) => a - b);
-    let q1 = data[Math.floor((data.length / 4))];
-    let q3 = data[Math.ceil((data.length * (3 / 4)))];
-    let iqr = q3 - q1;
-    let maxValue = q3 + iqr * 1.5;
-    let minValue = q1 - iqr * 1.5;
-    return data.filter(x => (x <= maxValue) && (x >= minValue));;
-  }
   render() {
     return <div className="d-flex justify-content-center">
         <div id={this.id}></div>
@@ -140,7 +132,7 @@ class BarChart extends Component {
 BarChart.propTypes = {
   id: PropTypes.number.isRequired,
   answer: PropTypes.number.isRequired,
-  answers: PropTypes.array.isRequired,
+  answers: PropTypes.array,
 };
 
 export default BarChart;

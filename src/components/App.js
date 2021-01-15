@@ -11,7 +11,7 @@ function getRandomArbitrary(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-const INITIAL_TRIES = 2;
+const INITIAL_TRIES = 3;
 const QUESTIONS_PER_SESSION = 10;
 const NUM_OF_CATEGORIES = 5;
 
@@ -319,6 +319,7 @@ class App extends Component {
           scores={this.state.scores}
           currentScore={this.state.currentScore}
           playerStatus={this.playerStatus}
+          playerName={this.currentName}
           nextState={this.nextState} />;
       case states.QUIT:
         return <div className='body'> 
