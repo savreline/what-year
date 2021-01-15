@@ -133,7 +133,7 @@ MongoClient.connect(config.mongodbUri, (err, client) => {
       question: 'When did the Siege of Leningrad end?', answer: 1944}
 
   ]).then(res => {
-    console.info('contests', res.insertedCount);
+    console.info('no. questions inserted:', res.insertedCount);
   }).then(() => {
     client.close();
   });

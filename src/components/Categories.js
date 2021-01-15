@@ -7,8 +7,8 @@ const Categories = ({handleSubmit}) => {
     <div className="row row-cols-sm-1 row-cols-md-2 row-cols-lg-3
       justify-content-center px-2 py-0">
       {categories.map((category, id) =>
-        <div key={id} value={id} className="col p-1">
-          <button onClick={handleSubmit} 
+        <div key={id} className="col p-1">
+          <button value={id} onClick={handleSubmit} 
           className="btn btn-block btn-lg btn-secondary">
             {category}
           </button>
