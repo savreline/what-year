@@ -1,6 +1,6 @@
 # What Year Was That?
 
-"What Year Was That?" is a trivia game where users earn points based on how closely they are able to guess the years in which various world history events took place. Correctness of a user's guess relative to other user's guesses is shown on a bar chart. 
+"What Year Was That?" is a trivia game where users earn points based on how well they are able to guess the years in which various world history events took place. Correctness of a user's guess relative to other user's guesses is shown on a bar chart. 
 
 The game is a single web application built using the MERN stack. Communication with the database is via a server-side API. Bar charts are made using D3.js. The project is deployed on an AWS EC2 instance running Ubuntu 18.04.5 and Apache2 web server and on MongoDB Atlas. Deployed version can be viewed at: [whatyear.savreline.com](https://whatyear.savreline.com)
 
