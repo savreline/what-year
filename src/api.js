@@ -7,7 +7,7 @@ export const fetchQuestion = questionId => {
 };
 
 export const fetchQuestions = () => {
-  return axios.get(`/api/question/`)
+  return axios.get('/api/question/')
     .then(res => res.data);
 };
 

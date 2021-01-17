@@ -9,7 +9,7 @@ const Categories = ({handleSubmit}) => {
       {categories.map((category, id) =>
         <div key={id} className="col p-1">
           <button value={id} onClick={handleSubmit} 
-          className="btn btn-block btn-lg btn-secondary">
+            className="btn btn-block btn-lg btn-secondary">
             {category}
           </button>
         </div>  

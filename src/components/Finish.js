@@ -13,16 +13,17 @@ class Finish extends Component {
   fetchMessage = () => {
     if (this.props.playerStatus === playerStatus.COMPLETED_NONE) {
       return <p> You reached the end of this game session and earned <strong>
-        {this.props.currentScore} </strong> points. Would you like to
-      play again and try another category? </p>;
+        {this.props.currentScore} </strong> points in this session. Your total
+        score is shown below. Would you like to play again and try another category? </p>;
     } else if (this.props.playerStatus === playerStatus.COMPLETED_CAT) {
-      return <p> You completed all questions in this category. You current score is <strong>
-        {this.props.currentScore} </strong> points. Would you like to
-      play again and try another category? </p>;
+      return <p> You completed all questions in this category. You earned a total of 
+        <strong> {this.props.currentScore} </strong> points in this session. Your total
+        score is shown below. Would you like to play again and try another category? </p>;
     } else {
-      return <p> You completed all questions in this game. You final score is <strong>
-        {this.props.currentScore} </strong> points. Please check back later as 
-      more categories and questions could be added. </p>;
+      return <p> You completed all questions in this game. You earned a total of 
+        <strong> {this.props.currentScore} </strong> points in this session. 
+        Your final score is shown below. Please check back later as more categories and 
+        questions could be added. </p>;
     }
   }
   fetchButtons = () => {
@@ -45,7 +46,7 @@ class Finish extends Component {
       let idx = 0;
       for (let i = 0; i <= len; i++) {
         if (this.props.playerName == this.props.scores[i].playerName) {
-          idx = i
+          idx = i;
         }
       }
       return <tr style={{ backgroundColor: '#98FB98' }}>
@@ -86,7 +87,7 @@ class Finish extends Component {
           </table>
         </div>
         <form>
-          <button value='-1' className='quit' onClick={this.handleSubmit}
+          <button value='-1' onClick={this.handleSubmit}
             className="btn btn-block btn-lg btn-secondary m-1"> 
             QUIT GAME 
           </button>

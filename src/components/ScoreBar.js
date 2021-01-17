@@ -8,8 +8,8 @@ const ScoreBar = ({ currentName, currentScore }) => {
       rounded float-lg-right
       bg-secondary text-light
       mt-lg-3 mx-lg-3 p-2">
-        <span><strong>Player:</strong> {currentName} </span> &nbsp;
-        <span><strong>Points:</strong> {currentScore} </span> 
+      <span><strong>Player:</strong> {currentName} </span> &nbsp;
+      <span><strong>Points:</strong> {currentScore} </span> 
     </div>
   );
 };

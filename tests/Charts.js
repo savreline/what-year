@@ -9,13 +9,13 @@ class Charts extends Component {
   };
   handleSubmit = (event) => {
     event.preventDefault();
-    this.state.questions = [];
+    this.setState({ questions: [] });
     this.renderCharts(event.currentTarget);
   };
   renderCharts(event) {
     api.fetchQuestions()
       .then(questions => {
-        if (event.innerHTML != "All Categories") {
+        if (event.innerHTML != 'All Categories') {
           questions = questions.filter(question =>
             question.category == event.innerHTML);
         }
@@ -24,29 +24,29 @@ class Charts extends Component {
   }
   render() { 
     return (
-    <div className="container">
-      <div className="display-4 text-center border shadow 
+      <div className="container">
+        <div className="display-4 text-center border shadow 
          bg-secondary text-light my-4 p-3">
          Result Charts
-      </div>
-      <form className="text-center">
-        <Categories 
-          handleSubmit={this.handleSubmit} /> 
-      </form>
-      <div className="border shadow my-4 p-3">
-        {this.state.questions.map((question, id) =>
-          <div key={id} className="mb-2">
-            <strong style={{fontSize: "1.2rem"}}>{question.question}
+        </div>
+        <form className="text-center">
+          <Categories 
+            handleSubmit={this.handleSubmit} /> 
+        </form>
+        <div className="border shadow my-4 p-3">
+          {this.state.questions.map((question, id) =>
+            <div key={id} className="mb-2">
+              <strong style={{fontSize: '1.2rem'}}>{question.question}
               &nbsp;({question.answer})</strong>
-            <BarChart
-              id={id}
-              answer={question.answer}
-              answers={question.answers}/>
-          </div>
-        )}
+              <BarChart
+                id={id}
+                answer={question.answer}
+                answers={question.answers}/>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
-  )};
+    )};
 }
 
 export default Charts;

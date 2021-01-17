@@ -46,6 +46,7 @@ class App extends Component {
     this.questionsLeft = QUESTIONS_PER_SESSION;
     this.playerStatus = playerStatus.COMPLETED_NONE;
     this.answers = [];
+    this.latestAnswer = 0,
     this.completedQuestions = [];
     this.completedCategories 
       = new Array(NUM_OF_CATEGORIES + 1).fill(false);
@@ -54,7 +55,6 @@ class App extends Component {
 
   state = {
     currentState: states.START,
-    latestAnswer: 0,
     currentScore: 0,
     scores: []
   };
@@ -65,7 +65,7 @@ class App extends Component {
    * Compute difference and adjust tries if an answer is submitted. ***/
   nextState = (answer, category) => {
     if (typeof answer === 'number') {
-      this.state.latestAnswer = answer;
+      this.latestAnswer = answer;
       this.currentDiff = answer - this.currentQuestion.answer;
       this.numberOfTries--;
       this.addAnswer(this.currentQuestion.id, answer);
@@ -100,6 +100,7 @@ class App extends Component {
                'in this category. Pick another one');
             return;
           }
+          this.playerStatus = playerStatus.COMPLETED_NONE;
           this.currentName = answer;
           this.currentCategory = category;
           this.fetchQuestion();
@@ -193,7 +194,7 @@ class App extends Component {
   }
 
   /* Checks if there are any categories for which all questions
-  * been answered for this particular user. If yes, sets the 
+  * been answered for this particular player. If yes, sets the 
   * respective entry in the categories array to true. */
   checkCategories = () => {
     for (let i = 1; i < NUM_OF_CATEGORIES + 1; i++) {
@@ -314,7 +315,7 @@ class App extends Component {
       case states.ANSWER:
         return <Answer
           isCorrect={this.isCorrect}
-          latestAnswer={this.state.latestAnswer}
+          latestAnswer={this.latestAnswer}
           answer={this.currentQuestion.answer}
           answers={this.currentQuestion.answers}
           points={this.calculateScore()}

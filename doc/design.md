@@ -25,7 +25,7 @@ The next state is determined by the `nextState(answer, category)` function in th
 ## Components
 The main App component consists of the page title, of the body, and optionally includes the ScoreBar component. The body component is either the Start, Question, TryAgain, Answer or Finish component depending on the current state of the application. The ScoreBar component is displayed when the application is one of the following states: Question, TryAgain or Answer. The BarChart component is displayed within the Answer component.
 
-The Start or Finish components display the Categories component which generates the buttons that allow the user to choose the next category. The Finish component displays the leaderboard as an HTML table. On the following diagram, all component names are highlighted in blue, while black captions correspond to routine HTML elements.
+The Start or Finish components display the Categories component which generates the buttons that allow the player to choose the next category. The Finish component displays the leaderboard as an HTML table. On the following diagram, all component names are highlighted in blue, while black captions correspond to routine HTML elements.
 
 Screenshots of all components can be viewed [here](screenshots.md)
 ![Components](img/components.jpg)
