@@ -12,7 +12,7 @@ The game is a single web application built using the MERN stack. Communication w
 * GET: `/question/:questionId` - fetches the question with the given questionId
 * POST: `/question/:questionId` - adds the latest player's guess to the question with the given questionId
 * GET: `/question/` - fetches the entire question data set (for testing purposes only)
-* GET: `/players` - fetches the entire player data set (for the leader board)
+* GET: `/players` - fetches the entire player data set (for the leaderboard)
 * POST: `/players` - adds a new player's data to the player data set
 * GET: `/players/:playerName` - used for fetching the list of questions completed by the player
 

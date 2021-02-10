@@ -15,7 +15,7 @@ uses Axios get/post calls to the respective routes. The Express.js router then i
 
 <sup>1</sup> `fetchQuestion()` uses a random number generator to repeatedly generate a questionId, until the questionId corresponds to a question not yet attempted by the player \
 <sup>2</sup> `api.fetchQuestion(questionId)` is also once called directly from the nextState method, to fetch the updated list of answers for the given question \
-<sup>3</sup> `addPlayer()` constructs the current player object based on the information stores in the App component's object
+<sup>3</sup> `addPlayer()` constructs the current player object based on the information stored in the App component's object
 
 ## State Diagram
 The next state is determined by the `nextState(answer, category)` function in the App component. The logic of this function is summarized in the following diagram.
