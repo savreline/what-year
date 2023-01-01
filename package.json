@@ -35,11 +35,11 @@
     "@babel/preset-env": "^7.10.2",
     "@babel/preset-react": "^7.10.1",
     "babel-eslint": "^10.1.0",
-    "babel-loader": "^8.1.0",
+    "babel-loader": "^8.3.0",
     "eslint": "^7.2.0",
     "eslint-plugin-react": "^7.20.0",
     "nodemon": "^2.0.20",
     "webpack": "^5.39.1",
-    "webpack-cli": "^3.3.11"
+    "webpack-cli": "^5.0.1"
   }
 }
